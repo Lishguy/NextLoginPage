@@ -1,8 +1,5 @@
 "use client"
 
-import GithubLogin from "@/components/GithubLogin";
-import GoogleLogin from "@/components/GoogleLogin";
-import LinkedinLogin from "@/components/LinkedinLogin";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
 

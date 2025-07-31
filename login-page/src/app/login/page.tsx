@@ -19,18 +19,9 @@ const Login = () => {
         reset,
 } = useForm<Inputs>();
 const onSubmit: SubmitHandler<Inputs> = (data) => {
-    try {
-    const res = await fetch("AKfycbx-IgjosN02gXxtRcgfUxzA5ScYxkVZg2PV-Xb0G19W", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-
-    const result = await res.json();
-    console.log("Sheet response:", result);
-    reset(); // Clear form
-  } catch (error) {
-    console.error("Error saving to sheet:", error);
-  }
+    console.log("data", data);
+    reset();
+  
 };  
   return (
     <>
