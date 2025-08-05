@@ -7,7 +7,6 @@ import GithubLogin from '@/components/GithubLogin'
 import LinkedinLogin from '@/components/LinkedinLogin'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-// import Success from '../success/page'
 
 type Inputs = {
   email: string
@@ -15,10 +14,11 @@ type Inputs = {
 }
 
 const page = () => {
-    const { register, handleSubmit, reset, setValue } = useForm<Inputs>()
+  const router = useRouter();
+  const { register, handleSubmit, reset, setValue } = useForm<Inputs>()
   const [loading, setLoading] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-  const router = useRouter()
+  
 
    // ✅ Auto-fill if details are remembered
   useEffect(() => {
@@ -31,6 +31,8 @@ const page = () => {
       setRememberMe(true)
     }
   }, [setValue])
+
+ g
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true)
@@ -66,6 +68,7 @@ const page = () => {
 
     } catch (err) {
       alert('Something went wrong')
+      console.log(err)
     } finally {
       setLoading(false)
     }
