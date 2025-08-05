@@ -1,28 +1,75 @@
-"use client"
+'use client'
 
-import GithubLogin from "@/components/GithubLogin";
-import GoogleLogin from "@/components/GoogleLogin";
-import LinkedinLogin from "@/components/LinkedinLogin";
-import Link from "next/link";
-import { useForm, SubmitHandler } from "react-hook-form";
+import React, {useState, useEffect} from 'react'
+import Link from 'next/link'
+import GoogleLogin from '@/components/GoogleLogin'
+import GithubLogin from '@/components/GithubLogin'
+import LinkedinLogin from '@/components/LinkedinLogin'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
+// import Success from '../success/page'
 
 type Inputs = {
-    email: string;
-    password: string;
-};
+  email: string
+  password: string
+}
 
-const Login = () => {
-    const {
-        register, 
-        handleSubmit, 
-        formState: {errors},
-        reset,
-} = useForm<Inputs>();
-const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log("data", data);
-    reset();
-  
-};  
+const page = () => {
+    const { register, handleSubmit, reset, setValue } = useForm<Inputs>()
+  const [loading, setLoading] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
+  const router = useRouter()
+
+   // ✅ Auto-fill if details are remembered
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberEmail')
+    const savedPassword = localStorage.getItem('rememberPassword')
+
+    if (savedEmail && savedPassword) {
+      setValue('email', savedEmail)
+      setValue('password', savedPassword)
+      setRememberMe(true)
+    }
+  }, [setValue])
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+
+      const result = await res.json()
+
+      if (!res.ok) {
+        alert(result.message || 'Something went wrong')
+      } else {
+        alert('Login successful')
+
+         // ✅ Remember Me Logic
+        if (rememberMe) {
+          localStorage.setItem('rememberEmail', data.email)
+          localStorage.setItem('rememberPassword', data.password)
+        } else {
+          localStorage.removeItem('rememberEmail')
+          localStorage.removeItem('rememberPassword')
+        }
+
+        reset()
+        router.push('/success')
+      }
+
+
+    } catch (err) {
+      alert('Something went wrong')
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <>
         <div className="w-full min-h-screen grid bg-orange-300/20">
@@ -44,24 +91,32 @@ const onSubmit: SubmitHandler<Inputs> = (data) => {
                     <div className=" flex flex-col gap-2">
                         <label>Email</label>
                         <input className="text-black border border-black/20 rounded-lg p-1 shadow-md bg-white" type="email"
-                        {...register("email")}
+                        {...register('email', { required: true })}
                         />
 
                     </div>
                      <div className=" flex flex-col gap-2 mt-5">
                         <label>Password</label>
                         <input className="text-black border border-black/20 rounded-lg p-1 shadow-md bg-white" type="password" 
-                        {...register("password")}
+                        {...register('password', { required: true })}
                         />
                         
                     </div>
 
                     <div className="flex gap-2 mt-5">
-                        <input type="checkbox" />
+                        <input 
+                            type="checkbox"
+                            checked={rememberMe}
+                            onChange={() => setRememberMe(!rememberMe)}
+                         />
                         <label>Remember me</label>
                     </div>
 
-                    <input type="submit" className="w-full cursor-pointer bg-gray-200 rounded-md p-1 hover:shadow-md mt-5 font-bold text-gray-700" />
+                    <input 
+                    type="submit" 
+                    disabled={loading}
+                    value={loading ? 'Logging in...' : 'Login'}
+                    className="w-full cursor-pointer bg-gray-200 rounded-md p-1 hover:shadow-md mt-5 font-bold text-gray-700" />
                     <div className="mt-5">
                         <span>Dont have an account with us?</span><Link href="/register" className="text-orange-300 ml-1 cursor-pointer">Register Now</Link>
                     </div>
@@ -72,4 +127,4 @@ const onSubmit: SubmitHandler<Inputs> = (data) => {
   )
 }
 
-export default Login;
+export default page
