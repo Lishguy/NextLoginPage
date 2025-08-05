@@ -13,11 +13,11 @@ type Inputs = {
   password: string
 }
 
-const page = () => {
+const Login = () => {
   const router = useRouter();
-  const { register, handleSubmit, reset, setValue } = useForm<Inputs>()
-  const [loading, setLoading] = useState(false)
-  const [rememberMe, setRememberMe] = useState(false)
+  const { register, handleSubmit, reset, setValue } = useForm<Inputs>();
+  const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   
 
    // ✅ Auto-fill if details are remembered
@@ -31,8 +31,6 @@ const page = () => {
       setRememberMe(true)
     }
   }, [setValue])
-
- g
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true)
@@ -130,4 +128,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Login

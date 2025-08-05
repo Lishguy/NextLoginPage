@@ -46,7 +46,7 @@ const Register = () => {
     if (res.ok) {
         alert('Registration successful');
         setForm({ email: '', password: '', confirmPassword: '' }); 
-        setRedirecting(true)
+        setRedirecting(true) //redirecting
         setTimeout(() => {
           router.push('/login'); // ✅ smooth redirect
         }, 1500);
